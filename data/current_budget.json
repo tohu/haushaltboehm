@@ -1,0 +1,7 @@
+{
+  "name" : "haushalt", "children" : [
+    {"name" : "Bundesministerium für Arbeit und Soziales", "size" : 129888984},
+    {"name" : "Bundesministerium für Verteidigung", "size" : 34287847},
+    {"name" : "Bundesschuld", "size" : 25227120}
+  ]
+}
