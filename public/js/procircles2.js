@@ -6,6 +6,8 @@ var circles = [];
 var dataread = false;
 var containerRadius;
 
+xmlToJson();
+
 function setup() {
   var canvas = createCanvas(1600,850);
   containerRadius = min(width, height);
@@ -40,7 +42,7 @@ function loadData() {
       cc.text = function(me, txt) {
         return function(){
           if(me.collPoint) {
-            fill(0,150,100);
+            fill(0,50,50);
             noStroke();
             text(txt, me.location.x,me.location.y);
             text(txt, 900, 50);
@@ -58,8 +60,8 @@ function draw() {
   dataread ? "" : loadData();
 
 
-  fill(0,100,255,100);
-  stroke(255);
+  fill(50,150,100);
+  noStroke();
   ellipse(containerRadius/2, containerRadius/2, min(width, height));
   noStroke();
 

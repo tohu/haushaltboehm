@@ -85,7 +85,7 @@ circle = function(x, y, radius, velocity, colr, margin) {
     },
     text : null,
     fill : function() {
-      fill(255, 255-this.colr, 255 - this.colr, 255 - this.colr/255 * 100);
+      fill(150, 190-this.colr, 190 - this.colr, 255 - this.colr/255 * 50);
     },
     draw : function() {
       if(this.collCircle) {

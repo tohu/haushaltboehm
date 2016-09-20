@@ -6,7 +6,8 @@ var circles = [];
 
 
 function setup() {
-  createCanvas(1800,600);
+  var canvas = createCanvas(1800,600);
+  canvas.parent('sketch');
   frameRate(60);
   noStroke();
   background(0);
@@ -41,7 +42,6 @@ function setup() {
     cc.stroke = function(){stroke(0);strokeWeight(3);};
     circles.push(cc);
   }
-  console.log("DATEN: " + haushaltsdaten);
 }
 
 function draw() {
