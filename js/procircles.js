@@ -1,5 +1,3 @@
-
-
 var locations =[];
 var velocities = [];
 var amount = 50;
@@ -128,6 +126,3 @@ function draw() {
   fill(255);
   text(frameRate(), 15, 30);
 }
-
-
-

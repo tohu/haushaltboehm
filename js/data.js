@@ -6,7 +6,10 @@ var xmlToJson2 = function(rootxml)
     var NAME = 2;
 
     function recurse(xml, depth, mode) {
-
+      var child;
+      var sum;
+      var name;
+      var i;
 
 
       if(mode === DEF) {
@@ -14,13 +17,14 @@ var xmlToJson2 = function(rootxml)
         if(xml.tagName ==='haushalt') {
           newnode = {name:'haushalt'};
           newnode.children = [];
-          for(var i = 0; i < xml.childNodes.length; i++) {
-            var child = xml.childNodes[i];
+
+          for(i = 0; i < xml.childNodes.length; i++) {
+            child = xml.childNodes[i];
             newnode.children.push(recurse(child, depth +1, DEF));
           }
         }
         else if(xml.tagName === 'einzelplan') {
-          var name = recurse(xml, depth, NAME);
+          name = recurse(xml, depth, NAME);
           var size = recurse(xml, depth, AUS);
           console.log(size);
           newnode = {name:name, size:size};
@@ -35,9 +39,9 @@ var xmlToJson2 = function(rootxml)
           return 1;
         }
         else if(xml.tagName === 'ausgaben') {
-          var sum = 0;
-          for(var i = 0; i < xml.childNodes.length; i++) {
-            var child = xml.childNodes[i];
+          sum = 0;
+          for(i = 0; i < xml.childNodes.length; i++) {
+            child = xml.childNodes[i];
             sum += recurse(child, depth +1, AUS);
           }
           return sum;
@@ -48,23 +52,24 @@ var xmlToJson2 = function(rootxml)
           return wert;
         }
         else {
-          var sum = 0;
-          for(var i = 0; i < xml.childNodes.length; i++) {
-            var child = xml.childNodes[i];
+          sum = 0;
+          for(i = 0; i < xml.childNodes.length; i++) {
+            child = xml.childNodes[i];
             sum += recurse(child, depth +1, AUS);
           }
           return sum;
         }
       }
       else if(mode===NAME) {
-        var name = "NO NAME CHILDS";
+        name = "NO NAME CHILDS";
         if (xml.hasChildNodes()) {
           name = "NO NAME TEXT";
-          for(var i = 0; i < xml.childNodes.length; i++) {
-            var child = xml.childNodes[i];
-            if(child.tagName === "text") {
-              name = child.innerHTML;
-            }
+          for(i = 0; i < xml.childNodes.length; i++) {
+            child = xml.childNodes[i];
+            var tn = child.tagName;
+            var ih = child.innerHTML;
+            if(child.tagName === "text")
+              name = child.innerHTML || "Problem: Kein Titel gefunden.";
           }
         }
         return name;
@@ -74,10 +79,14 @@ var xmlToJson2 = function(rootxml)
     return recurse(rootxml.firstChild, 0, DEF);
   };
 
-var xmlToJson = function(draw)
+var haushaltsdaten;
+
+var xmlToJson = function(callback)
 {
   d3.xml("../data/Haushalt_2016.xml", function(error, xml) {
-    var json = xmlToJson2(xml);
-    draw(json);
+    json = xmlToJson2(xml);
+    haushaltsdaten = json;
+    if(callback)
+      callback(json);
   });
 };
