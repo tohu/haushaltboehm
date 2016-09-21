@@ -13,7 +13,7 @@ var xmlToJson2 = function(rootxml)
 
 
       if(mode === DEF) {
-        var newnode = {name:'ERROR',size:0};
+        var newnode = {name:'ERROR: '+xml.tagName,size:0};
         if(xml.tagName ==='haushalt') {
           newnode = {name:'haushalt'};
           newnode.children = [];
