@@ -83,7 +83,7 @@ var haushaltsdaten;
 
 var xmlToJson = function(callback)
 {
-  d3.xml("data/Haushalt_2016.xml", function(error, xml) {
+  d3.xml("../data/Haushalt_2016.xml", function(error, xml) {
     json = xmlToJson2(xml);
     haushaltsdaten = json;
     if(callback)
