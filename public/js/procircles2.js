@@ -31,7 +31,7 @@ function loadData() {
     var sum = 0;
     haushaltsdaten.children.forEach(function(cur) {
       sum += cur.size;
-      var size = cur.size * 0.000005;
+      var size = 2000;//cur.size * 0.000005;
       var x = width/2 + random(-100, 100);
       var y = height/2 +random(-100, 100);
       var cc = circle(x,y,size/2);
@@ -39,6 +39,7 @@ function loadData() {
     });
     haushaltsdaten.children.forEach(function(cur,idx) {
       var cc = circles[idx];
+      cc.scaleArea(cur.size/sum);
       cc.text = function(me, txt) {
         return function(){
           if(me.collPoint) {
@@ -123,6 +124,7 @@ function draw() {
   if(!done) {
     for(i = 0; i<circles.length; i++) {
       circles[i].scaleArea(0.996);
+      circles[i].radius = max(circles[i].radius, 5);
     }
   }
   if(millis() - ms > 1500 && !done) {
