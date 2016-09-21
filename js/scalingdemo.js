@@ -16,7 +16,7 @@ function setup() {
   var shift = s +5;
 
   for(var i = amount; i > 0; i--) {
-    var size = 0.5 + 0.5* i / amount;
+    var size = 0.1 * i / amount;
     var cc = circle(shift, s, s);
     cc.scaleArea(size);
     shift += cc.radius*2;
@@ -30,7 +30,7 @@ function setup() {
   }
   shift = s +5;
   for(var i = amount; i > 0; i--) {
-    var size = 0.5 + 0.5* i / amount;
+    var size = i / amount;
     var cc = circle(shift, 3*s+10, s);
     cc.scaleRadius(size);
     shift += cc.radius*2;
