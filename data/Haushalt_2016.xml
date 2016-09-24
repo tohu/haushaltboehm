@@ -1029,7 +1029,6 @@ beweglichen Sachen</text>
           </titel>
         </einnahmen-ausgaben-art>
       </einnahmen>
-      <ausgaben/>
       <ausgaben>
         <titel fkt="011" flexibilisiert="ja" nr="42101" seite="37">
           <text>Bezüge des
@@ -34805,7 +34804,7 @@ Verordnung zur Festlegung der Steuersätze im Jahr 2016 nach
           </titel>
         </titelgruppe>
       </einnahmen>
-    </kapitel>
+    </kapitel>Erstattung an Sozialversicherungsträger für Rentenleistungen
     <kapitel nr="6002">
       <text>Allgemeine Bewilligungen</text>
       <einnahmen>
