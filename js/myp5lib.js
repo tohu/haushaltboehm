@@ -38,8 +38,17 @@ circle = function(x, y, radius, velocity, colr, margin) {
       if(coll) {
         dir.normalize();
         dir.mult(Math.abs(overlap));
-        this.acc.add(dir);
-        oc.acc.add(dir.mult(-1));
+
+        var oldw = 0.1;
+        var neww = 0.9;
+        var oldacc = this.acc.copy().mult(oldw);
+        this.acc = dir.copy().mult(neww).add(oldacc);
+        oldacc = oc.acc.copy().mult(oldw);
+        oc.acc = dir.copy().mult(-1*neww).add(oldacc);
+
+
+        // this.acc = this.acc.mult(0.5).add(this.acc.add(dir).mult(0.5));
+        // oc.acc.mult(0.5).add(oc.acc.adddir.mult(-1));
       }
       return this.collCircle;
     },
@@ -54,18 +63,17 @@ circle = function(x, y, radius, velocity, colr, margin) {
       this.velocity.y = y;
     },
     move : function(speed) {
-      this.acc.normalize().mult(speed);
+      this.acc.mult(speed);
       if(abs(this.acc.x)>0 || abs(this.acc.y) >0) {
         this.velocity.add(this.acc);
       }
       else {
         this.velocity.mult(0);
-
       }
       this.location.add(this.velocity);
     },
     phantomMove : function(speed) {
-      var cacc = this.acc.copy().normalize().mult(speed);
+      var cacc = this.acc.copy().mult(speed);
       var cvel = this.velocity.copy();
       if(abs(cacc.x)>0 || abs(cacc.y) >0) {
          cvel.add(cacc);
