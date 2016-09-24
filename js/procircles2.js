@@ -1,10 +1,13 @@
 var amount = 30;
 var ms = 0;
-var speed = 2;
+var speed = 0.01;
 
 var circles = [];
 var dataread = false;
 var containerRadius;
+var scalespeed=0.99;
+var fr=60;
+var donedone = false;
 
 xmlToJson();
 
@@ -13,14 +16,14 @@ function setup() {
   containerRadius = min(width, height);
   canvas.parent('sketch');
 
-  frameRate(60);
+  frameRate(fr);
   noStroke();
 
   for(var i = 0; i<amount; i++) {
     var size = random(5,400);
-    var x = containerRadius/2 + random(-100, 100);
-    var y = containerRadius/2 +random(-100, 100);
-    //circles.push(circle(x,y,size/2));
+    var x = containerRadius/2 + random(-containerRadius, containerRadius);
+    var y = containerRadius/2 +random(-containerRadius, containerRadius);
+    circles.push(circle(x,y,size/2));
   }
   background(0);
 }
@@ -30,7 +33,7 @@ function loadData() {
     circles = [];
     var sum = 0;
     haushaltsdaten.children.forEach(function(cur) {
-      sum += cur.size;
+      sum += cur.wert;
       var size = 2000;//cur.size * 0.000005;
       var x = width/2 + random(-100, 100);
       var y = height/2 +random(-100, 100);
@@ -39,7 +42,7 @@ function loadData() {
     });
     haushaltsdaten.children.forEach(function(cur,idx) {
       var cc = circles[idx];
-      cc.scaleArea(cur.size/sum);
+      cc.scaleArea(cur.wert/sum);
       cc.text = function(me, txt) {
         return function(){
           if(me.collPoint) {
@@ -49,22 +52,17 @@ function loadData() {
             text(txt, 900, 50);
           }
         };
-      }(cc, cur.name + " : " + Math.floor(cur.size / sum * 100) + "%  --- " + cur.size / 1000000000 + " Mrd. €");
+      }(cc, cur.text + " : " + Math.floor(cur.wert / sum * 100) + "%");
     });
     dataread = true;
   }
 }
 
-function draw() {
+var area;
+var aratio;
+
+function simulate() {
   var done = true;
-  background(255);
-  dataread ? "" : loadData();
-
-
-  fill(50,150,100);
-  noStroke();
-  ellipse(containerRadius/2, containerRadius/2, min(width, height));
-  noStroke();
 
   // reset all circles
   for(var i = 0; i<circles.length; i++) {
@@ -101,40 +99,105 @@ function draw() {
       var acc = middle.copy().sub(cc.location);
       cc.acc = acc;
       done = false;
-      cc.move(speed*2);
+      cc.move(speed);
     } else {
       cc.move(speed);
     }
-
-
     cc.collidePoint(mouseX, mouseY);
-    if(cc.collidePoint(mouseX, mouseY))
-      fill(100, 150, 50);
-    cc.draw();
 
     // fill(0,255,0);
     // textSize(20);
     // text(velocity.x + " : " + velocity.y, l.x, l.y);
   }
+
+  area = 0;
+  circles.forEach(function(cur) {
+    area += (cur.radius * cur.radius);
+  });
+
+  aratio = area / containerRadius/containerRadius;
+  donedone = (aratio >=  0.15);
+
+
+  if(!done) {
+    scalespeed = 0.01*0.99 + 0.99*scalespeed;
+    for(i = 0; i<circles.length; i++) {
+      circles[i].scaleArea(scalespeed);
+      // circles[i].radius = max(circles[i].radius, 5);
+    }
+  }
+  else if(!donedone) {
+    scalespeed = 0.01 * 1.4  + 0.99*scalespeed;
+    for(i = 0; i<circles.length; i++) {
+      circles[i].scaleArea(scalespeed);
+      // circles[i].radius = max(circles[i].radius, 5);
+    }
+  }
+}
+
+
+function draw() {
+  background(255);
+
+  if(!dataread)
+    loadData();
+
+  if(!donedone) {
+    for(var i = 0; i<10;i ++) {
+      simulate();
+    }
+  }
+  else {
+    simulate();
+  }
+
+
+  fill(50,150,100);
+  noStroke();
+  ellipse(containerRadius/2, containerRadius/2, min(width, height));
+  noStroke();
+
+  // reset all circles
+  for(var i = 0; i<circles.length; i++) {
+    // circles[i].collCircle = false;
+    // circles[i].setVelocity(0,0);
+    circles[i].reset();
+  }
+
+  // Collide all circles with each other
+  for(i = 0; i<circles.length; i++) {
+    var circle1 = circles[i];
+
+    for(var j = i+1; j<circles.length; j++) {
+      var circle2 = circles[j];
+      var coll = circle1.collideCircle(circle2);
+      if(coll) {
+        done = false;
+      }
+    }
+  }
+
+  // move and draw all circles
+  circles.forEach(function(cc) {
+    cc.collidePoint(mouseX, mouseY);
+    cc.draw();
+  });
+
   circles.forEach(function(cur) {
     if(cur.text)
       cur.text();
   });
 
-  if(!done) {
-    for(i = 0; i<circles.length; i++) {
-      circles[i].scaleArea(0.996);
-      circles[i].radius = max(circles[i].radius, 5);
-    }
-  }
   if(millis() - ms > 1500 && !done) {
     for(i = 0; i<circles.length; i++) {
       //sizes[i] *= 0.9;
     }
     ms = millis();
   }
-  fill(255);
-  text(frameRate(), 15, 30);
+  fill(0);
+  fr = 0.99 * fr +0.01*frameRate();
+  text(floor(fr), 15, 30);
+  text(aratio, 15, 45);
 }
 
 
