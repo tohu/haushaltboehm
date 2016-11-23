@@ -31,15 +31,22 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
   <script>
 
+  
+
   $(document).ready(function() {
     $.getJSON('data/haushalt_2016tree.json', function(data) {
       $("#tree").jstree(
         { 'core' : {
             'data' : [ data]
-        } }
+        },
+        "plugins" : [
+          "contextmenu", "dnd", "search",
+          "state", "types", "wholerow"
+        ]}
       );
     });
   });
+  
   </script>
 
 </body>
