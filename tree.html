@@ -37,7 +37,8 @@
     $.getJSON('data/haushalt_2016tree.json', function(data) {
       $("#tree").jstree(
         { 'core' : {
-            'data' : [ data]
+            'data' : [ data],
+            "check_callback" : true
         },
         "plugins" : [
           "dnd"
