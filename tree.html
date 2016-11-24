@@ -20,8 +20,14 @@
 
   <div id='footer'></div> -->
   
+  <div style="font-size: 2em;width:40%;">BÖHM</div>
+  <div style="width:20%;">Huhn.</div>
+  <div style="font-size: 2em;width:40%;">BÖHM</div>
+  
   <button id="export" style="width:10%; background:aquamarine; color:black;">EXPORT</button>
-  <input type="text" id="jsontext" style="margin-left:5%; width:80%;"></input>
+  <input type="text" id="jsontext" style="width:80%;"></input>
+  <button id="import" style="width:10%; background:pink; color:black;">IMPORT</button>
+  <div style="text-align:center;">Haushaltsgepräche.</div>
   
   <div style="margin-left: 10%;">
     <div id="tree" style="margin-top: 50px;"></div>
@@ -40,7 +46,7 @@
   
 
   $(document).ready(function() {
-    $.getJSON('data/haushalt_2016tree.json', function(data) {
+    function make_tree(data) {
       $("#tree").jstree(
         { 'core' : {
             'data' : [ data],
@@ -50,11 +56,18 @@
           "dnd", "contextmenu"
         ]}
       );
+    }
+    $.getJSON('data/haushalt_2016tree.json', function(data) {
+      make_tree(data);
     });
     $('#export').click(function() {
       var v = $('#tree').jstree(true).get_json('#', {flat:true})
       var mytext = JSON.stringify(v);
       $('#jsontext').val(mytext);
+    });
+    $('#import').click(function() {
+      var v = $('#jsontext').val(mytext);
+      make_tree(v);
     });
   });
   
