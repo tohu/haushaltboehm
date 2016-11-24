@@ -24,6 +24,8 @@
   <div style="margin-left: 10%;">
     <div id="tree" style="margin-top: 50px;"></div>
   </div>
+  
+  <input type="text" id="jsontext" style="width:100%; height:800px;"></input>
 
 
 
@@ -50,7 +52,7 @@
     $('#export').click(function() {
       var v = $('#tree').jstree(true).get_json('#', {flat:true})
       var mytext = JSON.stringify(v);
-      alert(mytext);
+      $('#jsontext').val(mytext);
     });
   });
   
