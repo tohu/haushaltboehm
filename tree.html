@@ -19,6 +19,8 @@
   </div>
 
   <div id='footer'></div> -->
+  
+  <div id="#export" style="width:200px; height:75px; background:#555; color:#DDD;">EXPORT</div>
   <div style="margin-left: 10%;">
     <div id="tree" style="margin-top: 50px;"></div>
   </div>
@@ -41,9 +43,14 @@
             "check_callback" : true
         },
         "plugins" : [
-          "dnd", "context_menu"
+          "dnd", "contextmenu"
         ]}
       );
+    });
+    $('#export').click(function() {
+      var v = $('#tree').jstree(true).get_json('#', {flat:true})
+      var mytext = JSON.stringify(v);
+      alert(mytext);
     });
   });
   
