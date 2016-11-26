@@ -11,29 +11,25 @@
 </head>
 
 <body>
-<!--   <div id='header'>#myhaushalt</div>
 
-  <div class='container'>
-    <div id='content'></div>
-    <div id='data'></div>
+  <div style="font-size: 8em;width:40%; float: left; text-align: center;">BÖHM</div>
+  <div style="width:20%; float: left; text-align: center;">
+    <img src="img/ei.jpg" style="height: 8em;"></img>
+  </div>
+  <div style="font-size: 8em;width:40%; float: left; text-align: center;">BÖHM</div>
+
+  <div id="controls" style="width: 100%;">
+    <button id="export" style="width:9%; background:aquamarine; color:black; float: left;">EXPORT</button>
+    <button id="import" style="width:9%; background:pink; color:black; float: right;">IMPORT</button>
+    <input type="file" id="jsonfileinput" style="display:none;"></input>
   </div>
 
-  <div id='footer'></div> -->
-  
-  <div style="font-size: 2em;width:40%; float: left;">BÖHM</div>
-  <div style="width:20%; float: left;">Huhn.</div>
-  <div style="font-size: 2em;width:40%; float: left;">BÖHM</div>
-  
-  <button id="export" style="width:10%; background:aquamarine; color:black; float: left;">EXPORT</button>
-  <input type="text" id="jsontext" style="width:80%; float: left;"></input>
-  <button id="import" style="width:10%; background:pink; color:black; float: left;">IMPORT</button>
-  <div style="text-align:center;">Haushaltsgepräche.</div>
-  
-  <div style="margin-left: 10%;">
-    <div id="tree" style="margin-top: 50px;"></div>
+  <div style="text-align:center; width: 100%; display: inline-block; font-size:2em;">Haushaltsgepräche.</div>
+  <div id="tree-container" style="margin-left: 10%;margin-top: 100px;">
+    <!-- <div id="tree" style="margin-top: 50px;"></div> -->
   </div>
-  
-  
+
+
 
 
 
@@ -41,13 +37,35 @@
   <script src="https://d3js.org/d3.v3.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+
   <script>
 
-  
-
   $(document).ready(function() {
+
+    String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+  };
+
+    var saveData = (function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      return function (data, fileName) {
+          var json = JSON.stringify(data),
+              blob = new Blob([json], {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = fileName;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+    }());
+
     function make_tree(data) {
-      $("#tree").jstree(
+      var $div = $('<div>').addClass('tree');
+      $div.jstree(
         { 'core' : {
             'data' : [ data],
             "check_callback" : true
@@ -56,21 +74,46 @@
           "dnd", "contextmenu"
         ]}
       );
+
+      $('#tree-container').empty();
+      $('#tree-container').append($div);
     }
     $.getJSON('data/haushalt_2016tree.json', function(data) {
       make_tree(data);
     });
+
+
     $('#export').click(function() {
-      var v = $('#tree').jstree(true).get_json('#', {flat:true})
-      var mytext = JSON.stringify(v);
-      $('#jsontext').val(mytext);
+      var v = $('.tree').jstree(true).get_json('#');
+      v=v[0];
+      saveData(v, 'tree_export.json');
     });
+
+
     $('#import').click(function() {
-      var v = $('#jsontext').val();
-      make_tree(v);
+      // var jsonstring = $('#jsontext').val();
+      // var json = JSON.parse(jsonstring);
+      // make_tree(json);
+      $('#jsonfileinput').click();
+    });
+
+    $('#jsonfileinput').change(function(ev){
+      console.log(this.files[0])
+
+
+      var reader = new FileReader();7
+
+      reader.onload = (function(file) {
+        var jsontext = reader.result;
+        var json = JSON.parse(jsontext);
+        make_tree(json);
+      });
+
+      reader.readAsText(this.files[0]);
+
     });
   });
-  
+
   </script>
 
 </body>
