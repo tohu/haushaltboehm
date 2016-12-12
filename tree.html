@@ -98,9 +98,11 @@
 
 
     $('#export').click(function() {
-      var v = $('.tree').jstree(true).get_json('#');
-      v=v[0];
-      saveData(v, 'tree_export.json');
+      var tree1 = $('#tree-container').find('.tree').jstree(true).get_json('#');
+      var tree2 = $('#tree-container2').find('.tree').jstree(true).get_json('#');
+      var data = [tree1[0], tree2[0]];
+      // v = v[0];
+      saveData(data, 'tree_export.json');
     });
 
 
@@ -112,15 +114,16 @@
     });
 
     $('#jsonfileinput').change(function(ev){
-      console.log(this.files[0])
+      console.log(this.files[0]);
 
 
-      var reader = new FileReader();7
+      var reader = new FileReader();
 
       reader.onload = (function(file) {
         var jsontext = reader.result;
         var json = JSON.parse(jsontext);
-        make_tree(json);
+        make_tree(json[0]);
+        make_tree(json[1], '#tree-container2');
       });
 
       reader.readAsText(this.files[0]);
